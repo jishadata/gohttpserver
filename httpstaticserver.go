@@ -191,7 +191,11 @@ func (s *HTTPStaticServer) hUploadOrMkdir(w http.ResponseWriter, req *http.Reque
 	}
 
 	file, header, err := req.FormFile("file")
-
+	if err != nil{
+		log.Println("get file error:", err)
+		http.Error(w, "get file from req: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 	if _, err := os.Stat(dirpath); os.IsNotExist(err) {
 		if err := os.MkdirAll(dirpath, os.ModePerm); err != nil {
 			log.Println("Create directory:", err)
